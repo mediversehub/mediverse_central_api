@@ -3,7 +3,9 @@ import os from 'os';
 
 import logger from './src/utils/logger';
 
-if (cluster.isPrimary) {
+const enableClustering = process.env.ENABLE_CLUSTERING === 'true';
+
+if (enableClustering && cluster.isPrimary) {
   const numCPUs = os.cpus().length;
   logger.info(`Master ${process.pid} is running`);
 
