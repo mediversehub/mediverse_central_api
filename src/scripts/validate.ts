@@ -1,14 +1,14 @@
 import { getMongoDB } from "./mongo";
 import logger from "../utils/logger";
 
-import { Mediverse_Users } from "./schemas/mediverse_users.schema";
+import { schemas as schemaConfigs } from "./schemas";
 
 interface SchemaDefinition {
   collection: string;
   validator: object;
 }
 
-const schemas: SchemaDefinition[] = [Mediverse_Users];
+const schemas: SchemaDefinition[] = schemaConfigs;
 
 async function applyValidator(
   collectionName: string,
