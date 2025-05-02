@@ -7,11 +7,13 @@ import requestLogger from './middlewares/request_logger';
 import helmet from './utils/helmet';
 import rateLimiter from './utils/rate_limiter';
 import errorHandler from './middlewares/error_handler';
+import corsMiddleware from './utils/cors';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(requestLogger);
+app.use(corsMiddleware);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet);
