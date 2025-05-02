@@ -1,0 +1,19 @@
+{
+  "name": "mediverse_central_api",
+  "version": "1.0.0",
+  "description": "Mediverse Central API This Repo will be used to store the APIs of the mediverse platform",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
