@@ -6,6 +6,7 @@ import logger from './utils/logger';
 import requestLogger from './middlewares/request_logger';
 import helmet from './utils/helmet';
 import rateLimiter from './utils/rate_limiter';
+import errorHandler from './middlewares/error_handler';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,8 @@ app.get('/', (_req, res) => {
   logger.info('Home route accessed');
   res.send('Hello, Mediverse!');
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}`);
