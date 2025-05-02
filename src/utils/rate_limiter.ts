@@ -1,3 +1,6 @@
+import rateLimit from 'express-rate-limit';
 import rateLimiterConfig from '../configs/rate_limiter.config';
 
-export default rateLimiterConfig;
+const rateLimiter = rateLimit(rateLimiterConfig);
+
+export default rateLimiter;

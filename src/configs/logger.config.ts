@@ -1,6 +1,6 @@
-import pino from 'pino';
+import { LoggerOptions } from 'pino';
 
-const logger = pino({
+const loggerConfig: LoggerOptions = {
   transport: {
     target: 'pino-pretty',
     options: {
@@ -10,6 +10,6 @@ const logger = pino({
     },
   },
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-});
+};
 
-export default logger;
+export default loggerConfig;
