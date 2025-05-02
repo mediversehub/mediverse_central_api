@@ -7,7 +7,7 @@ import requestLogger from './middlewares/request_logger';
 import helmet from './utils/helmet';
 import rateLimiter from './utils/rate_limiter';
 import errorHandler from './middlewares/error_handler';
-import corsMiddleware from './utils/cors';
+import cors from './utils/cors';
 import connectMongo from './utils/mongo';
 
 const app = express();
@@ -18,7 +18,7 @@ connectMongo();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
-app.use(corsMiddleware);
+app.use(cors);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet);
