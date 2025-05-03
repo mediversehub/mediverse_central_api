@@ -1,7 +1,7 @@
-import { getMongoDB } from "./mongo";
-import logger from "../utils/logger";
+import { getMongoDB } from './mongo';
+import logger from '../src/utils/logger';
 
-import { schemas as schemaConfigs } from "./schemas";
+import { schemas as schemaConfigs } from './schemas';
 
 interface SchemaDefinition {
   collection: string;
@@ -22,13 +22,13 @@ async function applyValidator(
     await db.command({
       collMod: collectionName,
       validator,
-      validationLevel: "strict",
+      validationLevel: 'strict',
     });
   } else {
     logger.info(`Creating collection '${collectionName}' with validator`);
     await db.createCollection(collectionName, {
       validator,
-      validationLevel: "strict",
+      validationLevel: 'strict',
     });
   }
 }
@@ -40,15 +40,15 @@ export default async function runValidationMigration() {
     for (const { collection, validator } of schemas as SchemaDefinition[]) {
       await applyValidator(collection, validator, db);
     }
-    logger.info("Validation migration completed.");
+    logger.info('Validation migration completed.');
   } catch (err) {
-    logger.error("Validation migration failed:", err);
+    logger.error('Validation migration failed:', err);
   } finally {
     await client.close();
   }
 }
 
 runValidationMigration().catch((err) => {
-  logger.error("Unhandled migration error:", err);
+  logger.error('Unhandled migration error:', err);
   process.exit(1);
 });

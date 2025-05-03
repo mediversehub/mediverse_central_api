@@ -8,8 +8,8 @@
     "dev": "nodemon --watch \"src\" --ext ts,json --exec ts-node src/index.ts",
     "start": "node dist/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "validate:schemas": "ts-node src/scripts/validate.ts",
-    "create:indexes": "ts-node src/scripts/indexes.ts"
+    "validate:schemas": "ts-node scripts/validate.ts",
+    "create:indexes": "ts-node scripts/indexes.ts"
   },
   "keywords": [],
   "author": "",
