@@ -116,6 +116,7 @@
     "migrations",
     "src/scripts/schemas",
     "src/scripts/utils",
-    "src/scripts/validate.ts"
+    "src/scripts/validate.ts",
+    "src/types/**/*"
   ]
 }

@@ -9,16 +9,21 @@ import rateLimiter from './utils/rate_limiter';
 import errorHandler from './middlewares/error_handler';
 import cors from './utils/cors';
 import connectMongo from './utils/mongo';
+import { auth } from './middlewares/auth';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 connectMongo();
 
+app.use(cors);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use(requestLogger);
-app.use(cors);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet);
@@ -29,6 +34,8 @@ app.get('/', (_req, res) => {
   logger.info('Home route accessed');
   res.send('Hello, Mediverse!');
 });
+
+app.use(auth);
 
 app.use(errorHandler);
 
