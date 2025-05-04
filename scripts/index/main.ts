@@ -1,6 +1,6 @@
-import { getMongoDB } from './mongo';
-import logger from '../src/utils/logger';
-import { indexConfigs } from './configs';
+import { getMongoDB } from "../mongo";
+import logger from "../../src/utils/logger";
+import { indexConfigs } from "./configs";
 
 async function createIndexes() {
   const { db, client } = await getMongoDB();
@@ -14,7 +14,7 @@ async function createIndexes() {
       logger.info(`Indexes for ${collection_name} created successfully`);
     }
   } catch (err) {
-    logger.error('Failed to create indexes:', err);
+    logger.error("Failed to create indexes:", err);
     throw err;
   } finally {
     await client.close();
