@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { EMAIL_REGEX, PHONE_REGEX } from "../constants";
 
 const pointSchema = {
   type: {
@@ -44,7 +45,7 @@ const mediverseUsersSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
-      match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
+      match: [EMAIL_REGEX, "Please use a valid email address"],
     },
 
     password: {
@@ -55,18 +56,18 @@ const mediverseUsersSchema = new mongoose.Schema(
 
     contact: {
       type: String,
-      match: [/^[0-9]{10}$/, "Phone must be 10 digits"],
+      match: [PHONE_REGEX, "Phone must be 10 digits"],
     },
 
     alternate_contact: {
       type: String,
-      match: [/^[0-9]{10}$/, "Phone must be 10 digits"],
+      match: [PHONE_REGEX, "Phone must be 10 digits"],
     },
     emergency_contact: {
       name: String,
       phone: {
         type: String,
-        match: [/^[0-9]{10}$/, "Phone must be 10 digits"],
+        match: [PHONE_REGEX, "Phone must be 10 digits"],
       },
       relation: String,
     },
