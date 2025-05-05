@@ -1,9 +1,10 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { Worker, Job } from 'bullmq';
-import IORedis from 'ioredis';
+import connection from '../utils/redis';
 import logger from '../utils/logger';
 import { sendVerificationEmail } from '../tasks/send_verification_email';
-
-const connection = new IORedis();
 
 const emailWorker = new Worker(
   'email-queue',

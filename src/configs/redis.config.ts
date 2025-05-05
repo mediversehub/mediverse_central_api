@@ -1,1 +1,4 @@
-export const redisConfig = process.env.REDIS_URI || 'redis://localhost:6379';
+export const redisConfig = {
+  connection: process.env.REDIS_URI || 'redis://localhost:6379',
+  maxRetriesPerRequest: null,
+};

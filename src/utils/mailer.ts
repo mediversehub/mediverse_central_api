@@ -6,7 +6,7 @@ const transporter = nodemailer.createTransport(mailerConfig);
 
 transporter.verify((error, success) => {
   if (error) {
-    logger.error('Mailer failed to connect:', error);
+    logger.error('Mailer failed to connect:', error.message);
   } else {
     logger.info('Mailer is ready to send emails');
   }
