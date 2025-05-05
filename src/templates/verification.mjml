@@ -1,0 +1,11 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold">Hello {{name}},</mj-text>
+        <mj-text> Your verification code is: <strong>{{otp}}</strong> </mj-text>
+        <mj-text> This code will expire in 30 minutes. </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

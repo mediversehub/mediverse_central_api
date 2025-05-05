@@ -4,6 +4,7 @@ import {
   OTP_LOCKOUT_PERIOD,
   OTP_RATE_LIMIT,
 } from '../constants';
+import { emailQueue } from '../queues/email.queue';
 import {
   createPendingUserRegistration,
   findPendingUserRegistrationByEmail,
@@ -81,7 +82,11 @@ export class AuthService {
       });
     }
 
-    // TODO : send otp through BullMQ + MJML + NodeMailer
+    await emailQueue.add('send-verification-email', {
+      to: email,
+      name: first_name,
+      otp,
+    });
   };
 
   public verifyOtp = async (email: string, otp: string) => {
