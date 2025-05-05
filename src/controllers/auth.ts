@@ -1,18 +1,25 @@
 import { Response } from 'express';
 import { EMAIL_REGEX, PHONE_REGEX } from '../constants';
 import {
-  createHashedPassword,
   createUser,
   findByEmail,
   findByPhone,
   findByUsername,
   getUserById,
-  validatePassword,
 } from '../repositories/mediverse_users';
+import { findPendingUserRegistrationByEmail } from '../repositories/pending_user_registrations';
+import { AuthService } from '../services/auth';
 import { RequestType } from '../types/express';
-import { generateAccessToken, generateRefreshToken } from '../utils/tokens';
+import {
+  createHashedPassword,
+  generateAccessToken,
+  generateRefreshToken,
+  validatePassword,
+} from '../utils';
 
 export class AuthController {
+  private authService = new AuthService();
+
   public self = async (req: RequestType, res: Response): Promise<any> => {
     const id = req.user?.id;
 
@@ -76,13 +83,36 @@ export class AuthController {
       return res.status(500).json({ message: 'Something went wrong' });
     }
 
-    const newUser = await createUser({
-      username,
-      email,
-      contact,
-      password: hashedPassword,
+    await this.authService.sendOtp(
       first_name,
       last_name,
+      email,
+      contact,
+      username,
+      password
+    );
+
+    return res.status(200).json({ message: 'OTP sent successfully' });
+  };
+
+  public verifyOtp = async (req: RequestType, res: Response): Promise<any> => {
+    const { otp, email } = req.body;
+
+    await this.authService.verifyOtp(email, otp);
+
+    const pendingRegistration = await findPendingUserRegistrationByEmail(email);
+
+    if (!pendingRegistration) {
+      return res.status(500).json({ message: 'Something went wrong' });
+    }
+
+    const newUser = await createUser({
+      username: pendingRegistration.username,
+      email: pendingRegistration.email,
+      contact: pendingRegistration.contact,
+      password: pendingRegistration.password,
+      first_name: pendingRegistration.first_name,
+      last_name: pendingRegistration.last_name,
     });
 
     if (!newUser) {
@@ -105,7 +135,9 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production',
     });
 
-    return res.status(201).json(newUser);
+    await pendingRegistration.deleteOne();
+
+    return res.status(201).json({ message: 'OTP verified successfully' });
   };
 
   public login = async (req: RequestType, res: Response): Promise<any> => {

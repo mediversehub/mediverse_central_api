@@ -1,8 +1,8 @@
-import { Response, NextFunction } from "express";
-import logger from "../utils/logger";
-import { generateAccessToken, verifyAccessToken } from "../utils/tokens";
-import { DecodedToken, RequestType } from "../types/express";
-import AppError from "../utils/app_error";
+import { Response, NextFunction } from 'express';
+import logger from '../utils/logger';
+import { generateAccessToken, verifyAccessToken } from '../utils';
+import { DecodedToken, RequestType } from '../types/express';
+import AppError from '../utils/app_error';
 
 export const auth = async (
   req: RequestType,
@@ -20,7 +20,7 @@ export const auth = async (
         return next();
       } catch (error) {
         // Access token invalid, fall through to refresh token check by gibing a warning on console
-        logger.warn("Access token invalid, checking refresh token");
+        logger.warn('Access token invalid, checking refresh token');
       }
     }
 
@@ -29,28 +29,28 @@ export const auth = async (
         const decoded: DecodedToken = verifyAccessToken(refreshToken);
         const newAccessToken = generateAccessToken(decoded.id);
 
-        res.cookie("accessToken", newAccessToken, {
+        res.cookie('accessToken', newAccessToken, {
           httpOnly: true,
-          sameSite: "strict",
-          secure: process.env.NODE_ENV === "production",
+          sameSite: 'strict',
+          secure: process.env.NODE_ENV === 'production',
         });
 
         req.user = decoded;
         return next();
       } catch (error) {
         // Both tokens invalid, fall through to error handling by giving a warning on console
-        logger.warn("Refresh token invalid");
+        logger.warn('Refresh token invalid');
       }
     }
 
     // No valid token, so will just proceed on to clearing cookies and sending Unauthorized error to client through our last middleware
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    return next(new AppError("Unauthorized: Invalid or expired tokens", 401));
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    return next(new AppError('Unauthorized: Invalid or expired tokens', 401));
   } catch (error) {
-    logger.error("Auth middleware error", error);
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    return next(new AppError("Internal Server Error", 500));
+    logger.error('Auth middleware error', error);
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    return next(new AppError('Internal Server Error', 500));
   }
 };

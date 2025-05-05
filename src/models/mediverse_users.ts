@@ -107,4 +107,8 @@ const mediverseUsersSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+mediverseUsersSchema.index({ username: 1 }, { unique: true });
+mediverseUsersSchema.index({ email: 1 }, { unique: true });
+mediverseUsersSchema.index({ contact: 1 }, { unique: true });
+
 export default mongoose.model('Mediverse_Users', mediverseUsersSchema);

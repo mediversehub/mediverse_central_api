@@ -1,16 +1,16 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
-import logger from './utils/logger';
-import requestLogger from './middlewares/request_logger';
-import helmet from './utils/helmet';
-import rateLimiter from './utils/rate_limiter';
-import errorHandler from './middlewares/error_handler';
-import cors from './utils/cors';
-import connectMongo from './utils/mongo';
-import { auth } from './middlewares/auth';
 import cookieParser from 'cookie-parser';
+import express from 'express';
+import { auth } from './middlewares/auth';
+import errorHandler from './middlewares/error_handler';
+import requestLogger from './middlewares/request_logger';
+import cors from './utils/cors';
+import helmet from './utils/helmet';
+import logger from './utils/logger';
+import connectMongo from './utils/mongo';
+import rateLimiter from './utils/rate_limiter';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
