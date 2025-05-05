@@ -9,6 +9,7 @@ import { uniqueUsernameSchema } from '../schemas/auth/unique_username_schema';
 import { uniqueEmailSchema } from '../schemas/auth/unique_email_schema';
 import { uniqueContactSchema } from '../schemas/auth/unique_contact_schema';
 import { registerSchema } from '../schemas/auth/register_schema';
+import { verifyOtpSchema } from '../schemas/auth/verify_otp_schema';
 
 const authController = new AuthController();
 
@@ -40,6 +41,13 @@ router
   .post(
     validateRequest(registerSchema),
     expressAsyncHandler(authController.register)
+  );
+
+router
+  .route('/verify-otp')
+  .post(
+    validateRequest(verifyOtpSchema),
+    expressAsyncHandler(authController.verifyOtp)
   );
 
 router

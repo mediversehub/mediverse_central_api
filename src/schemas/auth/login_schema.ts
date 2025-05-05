@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { uniqueEmailSchema } from './unique_email_schema';
 import { uniqueContactSchema } from './unique_contact_schema';
 import { uniqueUsernameSchema } from './unique_username_schema';
+import { passwordSchema } from './register_schema';
 
 export const loginSchema = z
   .object({
@@ -10,10 +11,6 @@ export const loginSchema = z
       uniqueEmailSchema.shape.email,
       uniqueContactSchema.shape.contact,
     ]),
-    password: z
-      .string({ required_error: 'Password is required.' })
-      .min(6, 'Password must be at least 6 characters long.')
-      .max(20, 'Password must not exceed 50 characters.')
-      .nonempty('Password cannot be empty.'),
+    password: passwordSchema.shape.password,
   })
   .strict();

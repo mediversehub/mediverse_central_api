@@ -1,5 +1,4 @@
 import Mediverse_Users from '../models/mediverse_users';
-import bcrypt from 'bcrypt';
 
 export const findByEmail = async (email: string) => {
   if (!email) return null;
