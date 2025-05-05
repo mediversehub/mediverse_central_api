@@ -32,6 +32,24 @@ export class AuthController {
     return res.status(200).json(!user);
   };
 
+  public isEmailUnique = async (
+    req: RequestType,
+    res: Response
+  ): Promise<any> => {
+    const { email } = req.body;
+    const user = await findByEmail(email);
+    return res.status(200).json(!user);
+  };
+
+  public isContactUnique = async (
+    req: RequestType,
+    res: Response
+  ): Promise<any> => {
+    const { contact } = req.body;
+    const user = await findByPhone(contact);
+    return res.status(200).json(!user);
+  };
+
   public login = async (req: RequestType, res: Response): Promise<any> => {
     const { credential, password } = req.body;
     let user = null;

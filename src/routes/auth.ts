@@ -4,8 +4,10 @@ const router = Router();
 
 import { AuthController } from '../controllers/auth';
 import { validateRequest } from '../middlewares/validate_request';
-import { loginSchema } from '../schemas/login_schema';
-import { uniqueUsernameSchema } from '../schemas/unique_username_schema';
+import { loginSchema } from '../schemas/auth/login_schema';
+import { uniqueUsernameSchema } from '../schemas/auth/unique_username_schema';
+import { uniqueEmailSchema } from '../schemas/auth/unique_email_schema';
+import { uniqueContactSchema } from '../schemas/auth/unique_contact_schema';
 
 const authController = new AuthController();
 
@@ -16,6 +18,20 @@ router
   .post(
     validateRequest(uniqueUsernameSchema),
     expressAsyncHandler(authController.isUsernameUnique)
+  );
+
+router
+  .route('/is-email-unique')
+  .post(
+    validateRequest(uniqueEmailSchema),
+    expressAsyncHandler(authController.isEmailUnique)
+  );
+
+router
+  .route('/is-contact-unique')
+  .post(
+    validateRequest(uniqueContactSchema),
+    expressAsyncHandler(authController.isContactUnique)
   );
 
 router
