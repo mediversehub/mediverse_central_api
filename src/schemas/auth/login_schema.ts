@@ -1,19 +1,15 @@
 import { z } from 'zod';
-import { PHONE_REGEX, EMAIL_REGEX } from '../../constants/index';
+import { uniqueEmailSchema } from './unique_email_schema';
+import { uniqueContactSchema } from './unique_contact_schema';
+import { uniqueUsernameSchema } from './unique_username_schema';
 
 export const loginSchema = z
   .object({
-    credential: z.string({ required_error: 'Credential is required.' }).refine(
-      (val) => {
-        if (EMAIL_REGEX.test(val)) return true;
-        if (PHONE_REGEX.test(val)) return true;
-        if (val.length >= 3) return true;
-        return false;
-      },
-      {
-        message: 'Please provide a valid email, phone number, or username.',
-      }
-    ),
+    credential: z.union([
+      uniqueUsernameSchema.shape.username,
+      uniqueEmailSchema.shape.email,
+      uniqueContactSchema.shape.contact,
+    ]),
     password: z
       .string({ required_error: 'Password is required.' })
       .min(6, 'Password must be at least 6 characters long.')
