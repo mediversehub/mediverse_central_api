@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { EMAIL_REGEX, PHONE_REGEX } from '../constants';
 import {
+  createHashedPassword,
   createUser,
   findByEmail,
   findByPhone,
@@ -8,8 +9,8 @@ import {
   getUserById,
   validatePassword,
 } from '../repositories/mediverse_users';
-import { generateAccessToken, generateRefreshToken } from '../utils/tokens';
 import { RequestType } from '../types/express';
+import { generateAccessToken, generateRefreshToken } from '../utils/tokens';
 
 export class AuthController {
   public self = async (req: RequestType, res: Response): Promise<any> => {
@@ -70,11 +71,16 @@ export class AuthController {
       return res.status(400).json({ message: 'Contact already exists' });
     }
 
+    const hashedPassword = await createHashedPassword(password);
+    if (!hashedPassword) {
+      return res.status(500).json({ message: 'Something went wrong' });
+    }
+
     const newUser = await createUser({
       username,
       email,
       contact,
-      password,
+      password: hashedPassword,
       first_name,
       last_name,
     });

@@ -16,6 +16,11 @@ export const findByUsername = async (username: string) => {
   return await Mediverse_Users.findOne({ username });
 };
 
+export const createHashedPassword = async (password: string) => {
+  if (!password) return null;
+  return await bcrypt.hash(password, 10);
+};
+
 export const validatePassword = async (user: any, password: string) => {
   if (!user || !password) return false;
   return await bcrypt.compare(password, user.password);
