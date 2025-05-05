@@ -1,15 +1,29 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { EMAIL_REGEX, PHONE_REGEX } from '../constants';
 import {
   findByEmail,
   findByPhone,
   findByUsername,
+  getUserById,
   validatePassword,
 } from '../repositories/mediverse_users';
 import { generateAccessToken, generateRefreshToken } from '../utils/tokens';
+import { RequestType } from '../types/express';
 
 export class AuthController {
-  public login = async (req: Request, res: Response): Promise<any> => {
+  public self = async (req: RequestType, res: Response): Promise<any> => {
+    const id = req.user?.id;
+
+    const user = await getUserById(id || '');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(user);
+  };
+
+  public login = async (req: RequestType, res: Response): Promise<any> => {
     const { credential, password } = req.body;
     let user = null;
 
