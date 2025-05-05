@@ -23,6 +23,15 @@ export class AuthController {
     return res.status(200).json(user);
   };
 
+  public isUsernameUnique = async (
+    req: RequestType,
+    res: Response
+  ): Promise<any> => {
+    const { username } = req.body;
+    const user = await findByUsername(username);
+    return res.status(200).json(!user);
+  };
+
   public login = async (req: RequestType, res: Response): Promise<any> => {
     const { credential, password } = req.body;
     let user = null;
