@@ -1,18 +1,51 @@
-import { Request, Response } from "express";
-import logger from "../utils/logger";
+import { Request, Response } from 'express';
+import { EMAIL_REGEX, PHONE_REGEX } from '../constants';
+import {
+  findByEmail,
+  findByPhone,
+  findByUsername,
+  validatePassword,
+} from '../repositories/mediverse_users';
+import { generateAccessToken, generateRefreshToken } from '../utils/tokens';
 
 export class AuthController {
   public login = async (req: Request, res: Response): Promise<any> => {
-    logger.info("Login route accessed");
+    const { credential, password } = req.body;
+    let user = null;
 
-    // const { credential, password } = req.body;
+    if (EMAIL_REGEX.test(credential)) {
+      user = await findByEmail(credential);
+    } else if (PHONE_REGEX.test(credential)) {
+      user = await findByPhone(credential);
+    } else {
+      user = await findByUsername(credential);
+    }
 
-    return res.status(401).json({ message: "Login failed" });
+    if (!user) {
+      return res.status(404).json({ message: 'Invalid Credentials' });
+    }
 
-    logger.info("Login successful");
+    let isPasswordValid = await validatePassword(user, password);
+    if (!isPasswordValid) {
+      return res.status(404).json({ message: 'Invalid Credentials' });
+    }
+
+    const newAccessToken = generateAccessToken(user.id);
+    const newRefreshToken = generateRefreshToken(user.id);
+
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
 
     return res.status(200).json({
-      message: "Login successful",
+      message: 'Login successful',
     });
   };
 }

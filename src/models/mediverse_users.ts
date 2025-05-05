@@ -1,12 +1,12 @@
-import mongoose from "mongoose";
-import { EMAIL_REGEX, PHONE_REGEX } from "../constants";
+import mongoose from 'mongoose';
+import { EMAIL_REGEX, PHONE_REGEX } from '../constants';
 
 const pointSchema = {
   type: {
     type: String,
-    enum: ["Point"],
+    enum: ['Point'],
     required: true,
-    default: "Point",
+    default: 'Point',
   },
   coordinates: {
     type: [Number],
@@ -15,7 +15,7 @@ const pointSchema = {
       validator: function (value: number[]) {
         return value.length === 2;
       },
-      message: "Coordinates must be an array of [longitude, latitude]",
+      message: 'Coordinates must be an array of [longitude, latitude]',
     },
   },
 };
@@ -45,7 +45,7 @@ const mediverseUsersSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
-      match: [EMAIL_REGEX, "Please use a valid email address"],
+      match: [EMAIL_REGEX, 'Please use a valid email address'],
     },
 
     password: {
@@ -56,18 +56,18 @@ const mediverseUsersSchema = new mongoose.Schema(
 
     contact: {
       type: String,
-      match: [PHONE_REGEX, "Phone must be 10 digits"],
+      match: [PHONE_REGEX, 'Phone must be 10 digits'],
     },
 
     alternate_contact: {
       type: String,
-      match: [PHONE_REGEX, "Phone must be 10 digits"],
+      match: [PHONE_REGEX, 'Phone must be 10 digits'],
     },
     emergency_contact: {
       name: String,
       phone: {
         type: String,
-        match: [PHONE_REGEX, "Phone must be 10 digits"],
+        match: [PHONE_REGEX, 'Phone must be 10 digits'],
       },
       relation: String,
     },
@@ -77,7 +77,7 @@ const mediverseUsersSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
+      enum: ['male', 'female', 'other'],
     },
     profile_picture: {
       type: String,
@@ -101,10 +101,10 @@ const mediverseUsersSchema = new mongoose.Schema(
     },
     blood_group: {
       type: String,
-      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Mediverse_Users", mediverseUsersSchema);
+export default mongoose.model('Mediverse_Users', mediverseUsersSchema);
