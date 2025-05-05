@@ -27,3 +27,10 @@ export const getUserById = async (id: string) => {
   }
   return await Mediverse_Users.findById(id);
 };
+
+export const createUser = async (user: any) => {
+  if (!user) {
+    return null;
+  }
+  return await Mediverse_Users.create(user);
+};

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { EMAIL_REGEX, PHONE_REGEX } from '../constants';
 import {
+  createUser,
   findByEmail,
   findByPhone,
   findByUsername,
@@ -50,6 +51,57 @@ export class AuthController {
     return res.status(200).json(!user);
   };
 
+  public register = async (req: RequestType, res: Response): Promise<any> => {
+    const { username, email, contact, password, first_name, last_name } =
+      req.body;
+
+    let user = await findByUsername(username);
+    if (user) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+
+    user = await findByEmail(email);
+    if (user) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+
+    user = await findByPhone(contact);
+    if (user) {
+      return res.status(400).json({ message: 'Contact already exists' });
+    }
+
+    const newUser = await createUser({
+      username,
+      email,
+      contact,
+      password,
+      first_name,
+      last_name,
+    });
+
+    if (!newUser) {
+      return res
+        .status(500)
+        .json({ message: 'Something went wrong while creating user' });
+    }
+
+    const newAccessToken = generateAccessToken(newUser?.id);
+    const newRefreshToken = generateRefreshToken(newUser?.id);
+
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return res.status(201).json(newUser);
+  };
+
   public login = async (req: RequestType, res: Response): Promise<any> => {
     const { credential, password } = req.body;
     let user = null;
@@ -88,5 +140,11 @@ export class AuthController {
     return res.status(200).json({
       message: 'Login successful',
     });
+  };
+
+  public logout = async (req: RequestType, res: Response): Promise<any> => {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    return res.status(200).json({ message: 'Logout successful' });
   };
 }

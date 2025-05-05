@@ -8,6 +8,7 @@ import { loginSchema } from '../schemas/auth/login_schema';
 import { uniqueUsernameSchema } from '../schemas/auth/unique_username_schema';
 import { uniqueEmailSchema } from '../schemas/auth/unique_email_schema';
 import { uniqueContactSchema } from '../schemas/auth/unique_contact_schema';
+import { registerSchema } from '../schemas/auth/register_schema';
 
 const authController = new AuthController();
 
@@ -35,10 +36,19 @@ router
   );
 
 router
+  .route('/register')
+  .post(
+    validateRequest(registerSchema),
+    expressAsyncHandler(authController.register)
+  );
+
+router
   .route('/login')
   .post(
     validateRequest(loginSchema),
     expressAsyncHandler(authController.login)
   );
+
+router.route('/logout').post(expressAsyncHandler(authController.logout));
 
 export default router;
