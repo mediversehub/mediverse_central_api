@@ -23,16 +23,16 @@ export const schemas = [
           },
           email: {
             bsonType: 'string',
-            pattern: EMAIL_REGEX,
+            pattern: EMAIL_REGEX.toString(),
           },
-          password: { bsonType: 'string', minLength: 8 },
+          password: { bsonType: 'string', minLength: 6 },
           contact: {
             bsonType: ['string', 'null'],
-            pattern: PHONE_REGEX,
+            pattern: PHONE_REGEX.toString(),
           },
           alternate_contact: {
             bsonType: ['string', 'null'],
-            pattern: PHONE_REGEX,
+            pattern: PHONE_REGEX.toString(),
           },
           emergency_contact: {
             bsonType: ['object', 'null'],
@@ -40,7 +40,7 @@ export const schemas = [
               name: { bsonType: 'string' },
               phone: {
                 bsonType: 'string',
-                pattern: PHONE_REGEX,
+                pattern: PHONE_REGEX.toString(),
               },
               relation: { bsonType: 'string' },
             },
@@ -104,6 +104,38 @@ export const schemas = [
             bsonType: ['string', 'null'],
             enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
           },
+        },
+      },
+    },
+  },
+  {
+    collection: 'PendingUserRegistrations',
+    validator: {
+      $jsonSchema: {
+        bsonType: 'object',
+        required: ['first_name', 'username', 'email', 'password', 'otp'],
+        properties: {
+          first_name: { bsonType: 'string', minLength: 1 },
+          last_name: { bsonType: ['string', 'null'] },
+          username: {
+            bsonType: 'string',
+            minLength: 3,
+            pattern: '^[a-z0-9_]+$',
+          },
+          email: {
+            bsonType: 'string',
+            pattern: EMAIL_REGEX.toString(),
+          },
+          password: { bsonType: 'string', minLength: 6 },
+          contact: {
+            bsonType: ['string', 'null'],
+            pattern: PHONE_REGEX.toString(),
+          },
+          otp: { bsonType: 'string', minLength: 6, maxLength: 6 },
+          otp_requests: { bsonType: 'int', minimum: 1 },
+          last_otp_request_at: { bsonType: 'date' },
+          failed_attempts: { bsonType: 'int', minimum: 0 },
+          last_failed_at: { bsonType: 'date' },
         },
       },
     },
