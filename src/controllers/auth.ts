@@ -11,11 +11,11 @@ import { findPendingUserRegistrationByEmail } from '../repositories/pending_user
 import { AuthService } from '../services/auth';
 import { RequestType } from '../types/express';
 import {
-  createHashedPassword,
   generateAccessToken,
   generateRefreshToken,
   validatePassword,
 } from '../utils';
+import logger from '../utils/logger';
 
 export class AuthController {
   private authService = new AuthService();
@@ -64,6 +64,7 @@ export class AuthController {
       req.body;
 
     let user = await findByUsername(username);
+    logger.info(user);
     if (user) {
       return res.status(400).json({ message: 'Username already exists' });
     }
@@ -76,11 +77,6 @@ export class AuthController {
     user = await findByPhone(contact);
     if (user) {
       return res.status(400).json({ message: 'Contact already exists' });
-    }
-
-    const hashedPassword = await createHashedPassword(password);
-    if (!hashedPassword) {
-      return res.status(500).json({ message: 'Something went wrong' });
     }
 
     await this.authService.sendOtp(

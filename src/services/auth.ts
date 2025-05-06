@@ -71,11 +71,16 @@ export class AuthService {
       previousOtpRequest.otp = hashedOtp;
       await previousOtpRequest.save();
     } else {
+      const hashedPassword = await createHashedPassword(password);
+      if (!hashedPassword) {
+        throw new AppError('Failed to generate password', 500);
+      }
+
       await createPendingUserRegistration({
         username,
         email,
         contact,
-        password,
+        password: hashedPassword,
         first_name,
         last_name,
         otp: hashedOtp,

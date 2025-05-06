@@ -1,24 +1,31 @@
 import mongoose from 'mongoose';
 import { EMAIL_REGEX, PHONE_REGEX } from '../constants';
 
-const pointSchema = {
-  type: {
-    type: String,
-    enum: ['Point'],
-    required: true,
-    default: 'Point',
-  },
-  coordinates: {
-    type: [Number],
-    required: true,
-    validate: {
-      validator: function (value: number[]) {
-        return value.length === 2;
+const pointSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ['Point'],
+    },
+    coordinates: {
+      type: [Number],
+      required: false,
+      validate: {
+        validator: function (value: number[] | undefined) {
+          return (
+            !value ||
+            (Array.isArray(value) &&
+              value.length === 2 &&
+              typeof value[0] === 'number' &&
+              typeof value[1] === 'number')
+          );
+        },
+        message: 'Coordinates must be an array of [longitude, latitude]',
       },
-      message: 'Coordinates must be an array of [longitude, latitude]',
     },
   },
-};
+  { _id: false }
+);
 
 const mediverseUsersSchema = new mongoose.Schema(
   {
@@ -51,11 +58,12 @@ const mediverseUsersSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: 8,
+      minlength: 6,
     },
 
     contact: {
       type: String,
+      unique: true,
       match: [PHONE_REGEX, 'Phone must be 10 digits'],
     },
 
@@ -85,30 +93,31 @@ const mediverseUsersSchema = new mongoose.Schema(
     permanent_address: {
       address: {
         type: String,
-        required: true,
         trim: true,
       },
       pincode: String,
       state: String,
       city: String,
-      location: pointSchema,
+      location: {
+        type: pointSchema,
+        required: false,
+      },
     },
     temporary_address: {
       pincode: String,
       state: String,
       city: String,
-      location: pointSchema,
+      location: {
+        type: pointSchema,
+        required: false,
+      },
     },
     blood_group: {
       type: String,
       enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: 'Mediverse_Users' }
 );
-
-mediverseUsersSchema.index({ username: 1 }, { unique: true });
-mediverseUsersSchema.index({ email: 1 }, { unique: true });
-mediverseUsersSchema.index({ contact: 1 }, { unique: true });
 
 export default mongoose.model('Mediverse_Users', mediverseUsersSchema);

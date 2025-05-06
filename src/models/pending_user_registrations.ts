@@ -15,7 +15,6 @@ const pendingUserRegistrationsSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
       trim: true,
       minlength: 3,
@@ -30,7 +29,7 @@ const pendingUserRegistrationsSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: 8,
+      minlength: 6,
     },
     contact: {
       type: String,
@@ -59,12 +58,8 @@ const pendingUserRegistrationsSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: 'PendingUserRegistrations',
   }
-);
-
-pendingUserRegistrationsSchema.index(
-  { createdAt: 1 },
-  { expireAfterSeconds: 60 * 60 * 24 }
 );
 
 export default mongoose.model(

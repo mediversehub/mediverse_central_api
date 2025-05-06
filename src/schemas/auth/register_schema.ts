@@ -6,7 +6,7 @@ import { uniqueUsernameSchema } from './unique_username_schema';
 export const passwordSchema = z.object({
   password: z
     .string({ required_error: 'Password is required.' })
-    .min(8, 'Password must be at least 6 characters long.')
+    .min(6, 'Password must be at least 6 characters long.')
     .max(50, 'Password must not exceed 50 characters.')
     .nonempty('Password cannot be empty.'),
 });
